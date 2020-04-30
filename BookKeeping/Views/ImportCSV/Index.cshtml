@@ -1,7 +1,13 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-}
+﻿<!DOCTYPE html>
+<html lang="zh-tw">
+<body class="no-skin">
 
-<h2>Index</h2>
 
+    @using (Html.BeginForm("OpenCSV", "ImportCSV", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="file" />
+        <input type="submit" value="OK" />
+    }
+
+</body>
+</html>
