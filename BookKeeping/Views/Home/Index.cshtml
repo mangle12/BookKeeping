@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="zh-tw">
-<body class="no-skin">
+<body id="body" class="no-skin">
     <div class="main-content">
         <div class="main-content-inner">
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
@@ -11,16 +11,15 @@
                     </li>
                     <li class="active">花費分析</li>
                 </ul><!-- /.breadcrumb -->
-
                 <!-- 搜尋視窗 -->
                 @*<div class="nav-search" id="nav-search">
-            <form class="form-search">
-                <span class="input-icon">
-                    <input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
-                    <i class="ace-icon fa fa-search nav-search-icon"></i>
-                </span>
-            </form>
-        </div>*@<!-- /.nav-search -->
+                        <form class="form-search">
+                            <span class="input-icon">
+                                <input type="text" placeholder="Search ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                                <i class="ace-icon fa fa-search nav-search-icon"></i>
+                            </span>
+                        </form>
+                    </div>*@<!-- /.nav-search -->
             </div>
 
             <div class="page-content">
@@ -92,13 +91,15 @@
                 </div><!-- /.ace-settings-container -->
 
                 <div class="page-header">
-                    <h1>
-                        Dashboard
-                        <small>
-                            <i class="ace-icon fa fa-angle-double-right"></i>
-                            overview &amp; stats
-                        </small>
-                    </h1>
+                    @*<h1>
+                            Dashboard
+                            <small>
+                                <i class="ace-icon fa fa-angle-double-right"></i>
+                                overview &amp; stats
+                            </small>
+                        </h1>*@
+
+                    <p>日期：<input class="mtz-monthpicker-widgetcontainer" type="text" id="events_widget" /></p>
                 </div><!-- /.page-header -->
 
                 <div class="row">
@@ -237,7 +238,7 @@
                                     <div class="widget-header widget-header-flat widget-header-small">
                                         <h5 class="widget-title">
                                             <i class="ace-icon fa fa-signal"></i>
-                                            Traffic Sources
+                                            花費比例
                                         </h5>
 
                                         <div class="widget-toolbar no-border">
@@ -289,26 +290,26 @@
                                             <div class="clearfix">
                                                 <div class="grid3">
                                                     <span class="grey">
-                                                        <i class="ace-icon fa fa-facebook-square fa-2x blue"></i>
-                                                        &nbsp; likes
+                                                        <i class="ace-icon fa fa-cutlery fa-2x blue"></i>
+                                                        &nbsp; 餐飲食品:
                                                     </span>
-                                                    <h4 class="bigger pull-right">1,255</h4>
+                                                    <h4 id="showFoodCost" class="bigger pull-right" />
                                                 </div>
 
                                                 <div class="grid3">
                                                     <span class="grey">
-                                                        <i class="ace-icon fa fa-twitter-square fa-2x purple"></i>
-                                                        &nbsp; tweets
+                                                        <i class="ace-icon fa fa-home fa-2x purple"></i>
+                                                        &nbsp; 居家生活:
                                                     </span>
-                                                    <h4 class="bigger pull-right">941</h4>
+                                                    <h4 id="showHomeCost" class="bigger pull-right" />
                                                 </div>
 
                                                 <div class="grid3">
                                                     <span class="grey">
-                                                        <i class="ace-icon fa fa-pinterest-square fa-2x red"></i>
-                                                        &nbsp; pins
+                                                        <i class="ace-icon fa fa-money fa-2x red"></i>
+                                                        &nbsp; 總花費:
                                                     </span>
-                                                    <h4 class="bigger pull-right">1,050</h4>
+                                                    <h4 id="showTotalCost" class="bigger pull-right" />
                                                 </div>
                                             </div>
                                         </div><!-- /.widget-main -->
@@ -1208,8 +1209,6 @@
             </div><!-- /.page-content -->
         </div>
     </div><!-- /.main-content -->
-
-
     <!-- basic scripts -->
     <script src="~/assets/js/jquery-2.1.4.min.js"></script>
     <script type="text/javascript">
@@ -1230,5 +1229,61 @@
 
     <!-- inline scripts related to this page -->
     <script src="~/js/bookKeeping.js"></script>
+    <script src="~/js/jquery.mtz.monthpicker.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="~/css/waitMe.css">
+
+
+    <script>
+        $('#events_widget').monthpicker({
+            pattern: 'yyyy-mm',
+            selectedYear: new Date().getFullYear(),
+            startYear: 2010,
+            finalYear: 2100, monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+        }).attr('readonly', 'readonly');
+
+        function run_waitMe(effect) {
+            $('#body').waitMe({
+
+                //none, rotateplane, stretch, orbit, roundBounce, win8,
+                //win8_linear, ios, facebook, rotation, timer, pulse,
+                //progressBar, bouncePulse or img
+                effect: 'bounce',
+
+                //place text under the effect (string).
+                text: '',
+
+                //background for container (string).
+                bg: 'rgba(255,255,255,0.7)',
+
+                //color for background animation and text (string).
+                color: '#000',
+
+                //max size
+                maxSize: '',
+
+                //wait time im ms to close
+                waitTime: -1,
+
+                //url to image
+                source: '',
+
+                //or 'horizontal'
+                textPos: 'vertical',
+
+                //font size
+                fontSize: '',
+
+                // callback
+                onClose: function () { }
+
+            });
+        }
+
+        function close_waitMe() {
+            $('#body').waitMe("hide");
+        }
+    </script>
 </body>
 </html>

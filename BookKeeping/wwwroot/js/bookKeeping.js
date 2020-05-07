@@ -1,4 +1,21 @@
-﻿jQuery(function ($) {
+﻿$(function () {
+    var d = new Date();
+    //上個月的分析
+    var ymLast = d.getFullYear() + '-' + ((d.getMonth()) < 10 ? '0' : '') + (d.getMonth());
+
+    $("#events_widget").attr("value", ymLast);
+});
+
+jQuery(function ($) {
+    var CategoryList;
+    var Data;
+
+    //預設取得上個月的資料
+    getMonthData(new Date().getFullYear() + '-' + new Date().getMonth());
+
+    getCategorys();
+    getPieChartData();
+
     $('.easy-pie-chart.percentage').each(function () {
         var $box = $(this).closest('.infobox');
         var barColor = $(this).data('color') || (!$box.hasClass('infobox-dark') ? $box.css('color') : 'rgba(255,255,255,0.95)');
@@ -27,21 +44,19 @@
             });
     });
 
-
-    //flot chart resize plugin, somehow manipulates default browser resize event to optimize it!
-    //but sometimes it brings up errors with normal resize event handlers
     $.resize.throttleWindow = false;
 
     var placeholder = $('#piechart-placeholder').css({ 'width': '90%', 'min-height': '150px' });
-    var data = [
-        { label: "social networks", data: 38.7, color: "#68BC31" },
-        { label: "search engines", data: 24.5, color: "#2091CF" },
-        { label: "ad campaigns", data: 8.2, color: "#AF4E96" },
-        { label: "direct traffic", data: 18.6, color: "#DA5430" },
-        { label: "other", data: 10, color: "#FEE074" }
-    ]
-    function drawPieChart(placeholder, data, position) {
-        $.plot(placeholder, data, {
+    //var data = [
+    //    { label: "social networks", data: 38.7, color: "#68BC31" },
+    //    { label: "search engines", data: 24.5, color: "#2091CF" },
+    //    { label: "ad campaigns", data: 8.2, color: "#AF4E96" },
+    //    { label: "direct traffic", data: 18.6, color: "#DA5430" },
+    //    { label: "other", data: 10, color: "#FEE074" }
+    //]
+
+    function drawPieChart(placeholder, Data, position) {
+        $.plot(placeholder, Data, {
             series: {
                 pie: {
                     show: true,
@@ -60,7 +75,8 @@
                 show: true,
                 position: position || "ne",
                 labelBoxBorderColor: null,
-                margin: [-30, 15]
+                margin: [0, 15],
+                noColumns: 3
             }
             ,
             grid: {
@@ -69,15 +85,15 @@
             }
         })
     }
-    drawPieChart(placeholder, data);
+
+    drawPieChart(placeholder, Data);
 
     /**
     we saved the drawing function and the data to redraw with different position later when switching to RTL mode dynamically
     so that's not needed actually.
     */
-    placeholder.data('chart', data);
-    placeholder.data('draw', drawPieChart);
-
+    //placeholder.data('chart', Data);
+    //placeholder.data('draw', drawPieChart);
 
     //pie chart tooltip example
     var $tooltip = $("<div class='tooltip top in'><div class='tooltip-inner'></div></div>").hide().appendTo('body');
@@ -103,9 +119,6 @@
         $tooltip.remove();
     });
 
-
-
-
     var d1 = [];
     for (var i = 0; i < Math.PI * 2; i += 0.5) {
         d1.push([i, Math.sin(i)]);
@@ -120,7 +133,6 @@
     for (var i = 0; i < Math.PI * 2; i += 0.2) {
         d3.push([i, Math.tan(i)]);
     }
-
 
     var sales_charts = $('#sales-charts').css({ 'width': '100%', 'height': '220px' });
     $.plot("#sales-charts", [
@@ -165,11 +177,9 @@
         return 'left';
     }
 
-
     $('.dialogs,.comments').ace_scroll({
         size: 300
     });
-
 
     //Android's default browser somehow is confused when tapping on label which will lead to dragging the task
     //so disable dragging when clicking on label
@@ -196,12 +206,12 @@
         }
     }
     );
+
     $('#tasks').disableSelection();
     $('#tasks input:checkbox').removeAttr('checked').on('click', function () {
         if (this.checked) $(this).closest('li').addClass('selected');
         else $(this).closest('li').removeClass('selected');
     });
-
 
     //show the dropdowns on top or bottom depending on window height and menu position
     $('#task-tab .dropdown-hover').on('mouseenter', function (e) {
@@ -213,4 +223,54 @@
         else $(this).removeClass('dropup');
     });
 
-})    
+    $('#events_widget').monthpicker().bind('monthpicker-click-month', function (e, month) {
+        run_waitMe('bounce');
+        getMonthData(month);
+        getPieChartData();
+        drawPieChart(placeholder, Data);
+
+        close_waitMe();
+    });
+
+    function getMonthData(date) {
+        $.ajax({
+            type: 'Post',
+            cache: false,
+            async: false,
+            url: 'Home/getMonthData',
+            data: {
+                'Date': date
+            },
+            success: function (response) {
+                $("#showTotalCost").text(response.totalCost);
+            }
+        });
+    }
+
+    function getCategorys() {
+        $.ajax({
+            type: 'Get',
+            cache: false,
+            async: false,
+            url: 'Home/getCategorys',
+            success: function (response) {
+                CategoryList = response;
+            }
+        });
+    }
+
+    function getPieChartData() {
+        $.ajax({
+            type: 'Get',
+            cache: false,
+            async: false,
+            url: 'Home/getPieChartData',
+            success: function (response) {
+                Data = response;
+                $("#showFoodCost").text(response[0].data);
+                $("#showHomeCost").text(response[2].data);
+            }
+        });
+    }    
+})
+

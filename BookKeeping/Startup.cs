@@ -27,9 +27,14 @@ namespace BookKeeping
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // 將 Session 存在 ASP.NET Core 記憶體中
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
             services.AddControllersWithViews();
             services.AddDbContext<BookkeepingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlConn")));            
             services.AddScoped<IImportCSVService, ImportCSVService>();
+            services.AddScoped<ICostService, CostService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +56,8 @@ namespace BookKeeping
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

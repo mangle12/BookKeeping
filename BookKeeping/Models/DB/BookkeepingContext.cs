@@ -18,6 +18,7 @@ namespace BookKeeping.Models.DB
 
         public virtual DbSet<StatementAccounts> StatementAccounts { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Categorys> Categorys { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
