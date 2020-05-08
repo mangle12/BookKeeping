@@ -8,8 +8,8 @@ namespace BookKeeping.IService
 {
     public interface ICostService
     {
-        List<StatementAccounts> getMonthData(string date);
+        Task<List<StatementAccounts>> GetMonthData(string date);
 
-        List<Categorys> getCategorys();
+        Task<List<Categorys>> GetCategorys();
     }
 }

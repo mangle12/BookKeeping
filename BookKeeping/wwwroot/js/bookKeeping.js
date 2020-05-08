@@ -234,10 +234,10 @@ jQuery(function ($) {
 
     function getMonthData(date) {
         $.ajax({
-            type: 'Post',
+            type: 'Get',
             cache: false,
             async: false,
-            url: 'Home/getMonthData',
+            url: 'Home/GetMonthData',
             data: {
                 'Date': date
             },
@@ -252,7 +252,7 @@ jQuery(function ($) {
             type: 'Get',
             cache: false,
             async: false,
-            url: 'Home/getCategorys',
+            url: 'Home/GetCategorys',
             success: function (response) {
                 CategoryList = response;
             }
@@ -264,7 +264,7 @@ jQuery(function ($) {
             type: 'Get',
             cache: false,
             async: false,
-            url: 'Home/getPieChartData',
+            url: 'Home/GetPieChartData',
             success: function (response) {
                 Data = response;
                 $("#showFoodCost").text(response[0].data);

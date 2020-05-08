@@ -21,7 +21,7 @@ namespace BookKeeping.Controllers
         public HomeController(ILogger<HomeController> logger, ICostService costService)
         {
             _logger = logger;
-            _costService = costService;            
+            _costService = costService;
         }
 
         public IActionResult Index()
@@ -41,26 +41,25 @@ namespace BookKeeping.Controllers
         }
 
         //當月所有花費
-        [HttpPost]
-        public IActionResult getMonthData(string date)
+        public async Task<IActionResult> GetMonthData(string date)
         {
-            List<StatementAccounts> monthData =  _costService.getMonthData(date);
+            List<StatementAccounts> monthData =  await _costService.GetMonthData(date);
 
             HttpContext.Session.SetObjectAsJson("monthData", monthData);
 
-            int? totalCost = getTotalCost();
+            int? totalCost = GetTotalCost();
 
             return Json(new { datalist = monthData, totalCost = totalCost });
         }
 
         //記帳分類
-        public IActionResult getCategorys()
+        public async Task<IActionResult> GetCategorys()
         {            
             List<Categorys> list = new List<Categorys>();
 
             if (HttpContext.Session.GetObjectFromJson<List<Categorys>>("categoryList") == null)
             {
-                list = _costService.getCategorys();
+                list = await _costService.GetCategorys();
                 HttpContext.Session.SetObjectAsJson("categoryList", list);
             }
             else
@@ -72,7 +71,7 @@ namespace BookKeeping.Controllers
         }
 
         //圓餅圖
-        public IActionResult getPieChartData()
+        public IActionResult GetPieChartData()
         {
             List<PieChart> list = new List<PieChart>();
             List<Categorys> categoryList = HttpContext.Session.GetObjectFromJson<List<Categorys>>("categoryList");
@@ -81,7 +80,7 @@ namespace BookKeeping.Controllers
                 PieChart pc = new PieChart
                 {
                     Label = item.CategoryName,
-                    data = Convert.ToDouble(getCategoryCost(item.CategoryName)),
+                    data = Convert.ToDouble(GetCategoryCost(item.CategoryName)),
                     color = item.Color
                 };
 
@@ -92,7 +91,7 @@ namespace BookKeeping.Controllers
         }
 
         //總花費
-        private int? getTotalCost()
+        private int? GetTotalCost()
         {
             List<StatementAccounts> monthData = HttpContext.Session.GetObjectFromJson<List<StatementAccounts>>("monthData");
 
@@ -100,7 +99,7 @@ namespace BookKeeping.Controllers
         }
 
         //類別花費
-        private int? getCategoryCost(string name)
+        private int? GetCategoryCost(string name)
         {
             List<StatementAccounts> monthData = HttpContext.Session.GetObjectFromJson<List<StatementAccounts>>("monthData");
 

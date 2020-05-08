@@ -1,5 +1,6 @@
 ﻿using BookKeeping.IService;
 using BookKeeping.Models.DB;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace BookKeeping.Service
             _dbContext = dbContext;
         }
 
-        public List<StatementAccounts> getMonthData(string date)
+        public async Task<List<StatementAccounts>> GetMonthData(string date)
         {
             List<StatementAccounts> list = null;
 
@@ -24,14 +25,14 @@ namespace BookKeeping.Service
             DateTime startDate = DateTime.Parse(date);
             DateTime endDate = int.Parse(months[1]) < 12 ? DateTime.Parse(months[0] + "-" + (int.Parse(months[1]) + 1).ToString()) : DateTime.Parse((int.Parse(months[0]) + 1).ToString() + "-1");
 
-            list = _dbContext.StatementAccounts.Where(x => x.Date < endDate && x.Date >= startDate).OrderBy(x => x.Date).ToList();
+            list = await _dbContext.StatementAccounts.Where(x => x.Date < endDate && x.Date >= startDate).OrderBy(x => x.Date).ToListAsync();
 
             return list;
         }
 
-        public List<Categorys> getCategorys()
+        public async Task<List<Categorys>> GetCategorys()
         {
-            List<Categorys> list = _dbContext.Categorys.OrderBy(x => x.Sort).ToList();
+            List<Categorys> list = await _dbContext.Categorys.OrderBy(x => x.Sort).ToListAsync();
 
             return list;
         }
