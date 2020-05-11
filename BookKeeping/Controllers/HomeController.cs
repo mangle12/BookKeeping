@@ -26,6 +26,7 @@ namespace BookKeeping.Controllers
 
         public IActionResult Index()
         {
+            _logger.LogInformation("Hello, this is the index!");
             return View();
         }
 
@@ -43,6 +44,8 @@ namespace BookKeeping.Controllers
         //當月所有花費
         public async Task<IActionResult> GetMonthData(string date)
         {
+            _logger.LogDebug("{date}月所有花費", date);
+
             List<StatementAccounts> monthData =  await _costService.GetMonthData(date);
 
             HttpContext.Session.SetObjectAsJson("monthData", monthData);
@@ -101,6 +104,8 @@ namespace BookKeeping.Controllers
         //類別花費
         private int? GetCategoryCost(string name)
         {
+            //_logger.LogDebug("{name}類別花費", name);
+
             List<StatementAccounts> monthData = HttpContext.Session.GetObjectFromJson<List<StatementAccounts>>("monthData");
 
             return monthData.Where(x => x.Category == name).Sum(y => y.Money);

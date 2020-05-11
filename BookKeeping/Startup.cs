@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NLog;
 
 namespace BookKeeping
 {
@@ -58,6 +59,8 @@ namespace BookKeeping
             app.UseAuthorization();
 
             app.UseSession();
+
+            LogManager.Configuration.Variables["connectionString"] = Configuration.GetConnectionString("SqlConn");
 
             app.UseEndpoints(endpoints =>
             {
