@@ -88,8 +88,7 @@ namespace BookKeeping.Controllers
                 };
 
                 list.Add(pc);
-            }
-
+            }            
             return Ok(list);
         }
 

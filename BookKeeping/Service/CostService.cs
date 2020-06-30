@@ -32,8 +32,7 @@ namespace BookKeeping.Service
 
         public async Task<List<Categorys>> GetCategorys()
         {
-            List<Categorys> list = await _dbContext.Categorys.OrderBy(x => x.Sort).ToListAsync();
-
+            List<Categorys> list = await _dbContext.Categorys.OrderBy(x => x.Sort).ToListAsync();            
             return list;
         }
     }
